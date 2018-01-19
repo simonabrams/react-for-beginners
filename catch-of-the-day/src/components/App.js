@@ -3,6 +3,8 @@ import React from 'react';
 import Header from './Header';
 import Order from './Order';
 import Inventory from './Inventory';
+import Fish from './Fish';
+import sampleFishes from '../sample-fishes.js'
 
 class App extends React.Component {
 	constructor(){
@@ -10,8 +12,10 @@ class App extends React.Component {
 		// and allow it to have state
 		super();
 
-		// add the addFish() method to the App
+		// create methods that will be available on the app
+		// pass them down to components that need them
 		this.addFish = this.addFish.bind(this);
+		this.loadSamples = this.loadSamples.bind(this);
 
 		// initial state
 		this.state = {
@@ -20,6 +24,14 @@ class App extends React.Component {
 		};
 	}
 
+	//  loads in sample fishes from json data
+	loadSamples() {
+		this.setState({
+			fishes: sampleFishes,
+		});
+	}
+
+	// lets us add a new fish via the inventory form
 	addFish(fish) {
 		// update state
 		// best practice: first copy current state
@@ -38,9 +50,19 @@ class App extends React.Component {
 			<div className="catch-of-the-day">
 				<div className="menu">
 					<Header tagline="Fresh Seafood Market"/>
+					<ul className="list-of-fishes">
+						{
+							// iterate over the fish data and create a new fish component for each
+							// takes in a list and give an array
+							Object
+							.keys( this.state.fishes )
+							.map( key => <Fish key={key} details={ this.state.fishes[key] }/> )
+
+						}
+					</ul>
 				</div>
 				<Order />
-				<Inventory addFish={this.addFish}/>
+				<Inventory addFish={ this.addFish } loadSamples={ this.loadSamples }/>
 			</div>
 		);
 	}
